@@ -10,7 +10,7 @@ myProperty = ['P106','occupation']
 
 #This is the name of the file that has your input list
 
-inputFileNameQuickSheets = 'AF-MoMA-2018-en.csv'
+inputFileNameQuickSheets = 'artist_test.csv'
 
 
 #Gender

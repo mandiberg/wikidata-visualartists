@@ -123,18 +123,33 @@ with open(inputFileName+'.csv','rU') as csvfile:
 					qid = WD.getQID()
 		hasWP = False
 		hasWP = WP.getWikipediaJSON() #get wikipedia json object
-		# print "HAS WP ==================== "+str(hasWP)
+		print "HAS WP ==================== "+str(hasWP)
+
+		wpCreator = False
+		wpCreator = WP.getWikipediaCreator() #get wikipedia json object
+		print "The Creator is ==================== "+str(wpCreator)
+
 		if useFirstSentence:
 			firstSentence = WP.getFirstSentence()
 		WD.getPData(pValues[0][0])
 		WD.getPData(pValues[1][0])
+		WD.getPData("P31")
 		logging.info(WD.pData)
 		# logging.info(pList21)
 		p1 = WD.pData[pValues[0][0]][0].decode().encode('utf-8')
 		p1Value = WD.pData[pValues[0][0]][1].decode().encode('utf-8')
 		p2 = WD.pData[pValues[1][0]][0].decode().encode('utf-8')
-		p2Value = WD.pData[pValues[1][0]][1].decode().encode('utf-8')
-		printout = (qid+" --- "+unicode(titleOriginal,errors='ignore')+" --- "+p1+" --- "+p1Value).decode().encode('utf-8')
+		try:
+			p2Value = WD.pData[pValues[1][0]][1].decode().encode('utf-8')
+		except Exception as e:
+			p2Value = "NULL"
+
+		p3 = unicode(WD.pData["P31"][0].decode().encode('utf-8'),errors='ignore')
+		try:
+			p3Value = WD.pData["P31"][1].decode().encode(u'utf-8')
+		except Exception as e:
+			p3Value = "NULL"
+		printout = (qid+" --- "+unicode(titleOriginal,errors='ignore')+" --- "+p1+" --- "+p1Value+" --- "+p3+" --- "+p3Value).decode().encode('utf-8')
 		logging.critical(printout.decode('utf-8').encode('utf-8'))
 		if any(p1Value.lower() ==  s.lower() for s in genderSelect):
 			if p2Value:
@@ -152,10 +167,10 @@ with open(inputFileName+'.csv','rU') as csvfile:
 						if link in allInfo:
 							for context in allInfo[link]:
 								logging.info(p2Value + " ------------ " + link + " -------- " + context)
-								csvWriterRef.writerow([language, titleOriginal, qid, p1, p1Value, p2, p2Value,'',link, context])
+								csvWriterRef.writerow([language, titleOriginal, qid, p1, p1Value, p2, p2Value, p3, wpCreator, p3Value,'',link, context])
 								outputRef.flush()
 
-				csvWriterFemaleGood.writerow([language, titleOriginal, qid, p1, p1Value, p2, p2Value, firstSentence])
+				csvWriterFemaleGood.writerow([language, titleOriginal, qid, p1, p1Value, p2, p2Value, p3, p3Value, wpCreator, firstSentence])
 				outputFemaleGood.flush()
 			elif defaultEthnicGroup[0] and hasWP:
 				if getReferences:
@@ -233,7 +248,7 @@ with open(inputFileName+'.csv','rU') as csvfile:
 					csvWriterOtherDeleted.writerow([language, titleOriginal, qid, p1, p1Value, p2, p2Value, firstSentence])
 					outputOtherDeleted.flush()
 			else:
-				csvWriterOther.writerow([language, titleOriginal, qid, p1, p1Value, p2, p2Value, firstSentence])
+				csvWriterOther.writerow([language, titleOriginal, qid, p1, p1Value, p2, p2Value, p3, p3Value, wpCreator, firstSentence])
 				outputOther.flush()
 		#here we are resetting the following values
 		keys = []
