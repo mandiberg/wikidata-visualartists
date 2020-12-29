@@ -129,11 +129,14 @@ with open(inputFileName+'.csv','rU') as csvfile:
 		wpCreator = WP.getWikipediaCreator() #get wikipedia json object
 		print "The Creator is ==================== "+str(wpCreator)
 
+
 		if useFirstSentence:
 			firstSentence = WP.getFirstSentence()
 		WD.getPData(pValues[0][0])
 		WD.getPData(pValues[1][0])
-		WD.getPData("P31")
+		WD.getPData("P31")  #added this
+		WD.getPData("P27")  #added this
+		WD.getPData("P569")  #added this
 		logging.info(WD.pData)
 		# logging.info(pList21)
 		p1 = WD.pData[pValues[0][0]][0].decode().encode('utf-8')
@@ -149,7 +152,22 @@ with open(inputFileName+'.csv','rU') as csvfile:
 			p3Value = WD.pData["P31"][1].decode().encode(u'utf-8')
 		except Exception as e:
 			p3Value = "NULL"
-		printout = (qid+" --- "+unicode(titleOriginal,errors='ignore')+" --- "+p1+" --- "+p1Value+" --- "+p3+" --- "+p3Value).decode().encode('utf-8')
+
+		#adding two subroutings for the additiona Pvalues
+		p4 = unicode(WD.pData["P27"][0].decode().encode('utf-8'),errors='ignore')
+		try:
+			p4Value = WD.pData["P27"][1].decode().encode(u'utf-8')
+		except Exception as e:
+			p4Value = "NULL"
+
+#P569 isn't coming through. I think it is because it is a date value, and so encoded differntly	
+		p5 = unicode(WD.pData["P569"][0].decode().encode('utf-8'),errors='ignore')
+		try:
+			p5Value = WD.pData["P569"][1].decode().encode(u'utf-8')
+		except Exception as e:
+			p5Value = "NULL"
+
+		printout = (qid+" --- "+unicode(titleOriginal,errors='ignore')+" --- "+p4+" --- "+p4Value+" --- "+p5+" --- "+p5Value).decode().encode('utf-8')
 		logging.critical(printout.decode('utf-8').encode('utf-8'))
 		if any(p1Value.lower() ==  s.lower() for s in genderSelect):
 			if p2Value:
@@ -167,10 +185,10 @@ with open(inputFileName+'.csv','rU') as csvfile:
 						if link in allInfo:
 							for context in allInfo[link]:
 								logging.info(p2Value + " ------------ " + link + " -------- " + context)
-								csvWriterRef.writerow([language, titleOriginal, qid, p1, p1Value, p2, p2Value, p3, wpCreator, p3Value,'',link, context])
+								csvWriterRef.writerow([language, titleOriginal, qid, p1, p1Value, p2, p2Value, wpCreator, p3, p3Value, p4, p4Value, p5, p5Value,'',link, context])
 								outputRef.flush()
 
-				csvWriterFemaleGood.writerow([language, titleOriginal, qid, p1, p1Value, p2, p2Value, p3, p3Value, wpCreator, firstSentence])
+				csvWriterFemaleGood.writerow([language, titleOriginal, qid, p1, p1Value, p2, p2Value, firstSentence, wpCreator, p3, p3Value, p4, p4Value, p5, p5Value])
 				outputFemaleGood.flush()
 			elif defaultEthnicGroup[0] and hasWP:
 				if getReferences:
@@ -248,7 +266,7 @@ with open(inputFileName+'.csv','rU') as csvfile:
 					csvWriterOtherDeleted.writerow([language, titleOriginal, qid, p1, p1Value, p2, p2Value, firstSentence])
 					outputOtherDeleted.flush()
 			else:
-				csvWriterOther.writerow([language, titleOriginal, qid, p1, p1Value, p2, p2Value, p3, p3Value, wpCreator, firstSentence])
+				csvWriterOther.writerow([language, titleOriginal, qid, p1, p1Value, p2, p2Value, firstSentence, wpCreator, p3, p3Value, p4, p4Value, p5, p5Value])
 				outputOther.flush()
 		#here we are resetting the following values
 		keys = []
