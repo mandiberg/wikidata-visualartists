@@ -132,6 +132,8 @@ with open(inputFileName+'.csv','rU') as csvfile:
 
 		if useFirstSentence:
 			firstSentence = WP.getFirstSentence()
+		pageid = WP.getPageID()
+		print "ID ######## "+str(pageid)
 		WD.getPData(pValues[0][0])
 		WD.getPData(pValues[1][0])
 		WD.getPData("P31")  #added this
@@ -185,10 +187,10 @@ with open(inputFileName+'.csv','rU') as csvfile:
 						if link in allInfo:
 							for context in allInfo[link]:
 								logging.info(p2Value + " ------------ " + link + " -------- " + context)
-								csvWriterRef.writerow([language, titleOriginal, qid, p1, p1Value, p2, p2Value, wpCreator, p3, p3Value, p4, p4Value, p5, p5Value,'',link, context])
+								csvWriterRef.writerow([language, titleOriginal, qid, p1, p1Value, p2, p2Value, wpCreator, p3, p3Value, p4, p4Value, p5, p5Value,'',link, context, pageid])
 								outputRef.flush()
 
-				csvWriterFemaleGood.writerow([language, titleOriginal, qid, p1, p1Value, p2, p2Value, firstSentence, wpCreator, p3, p3Value, p4, p4Value, p5, p5Value])
+				csvWriterFemaleGood.writerow([language, titleOriginal, qid, p1, p1Value, p2, p2Value, firstSentence, wpCreator, p3, p3Value, p4, p4Value, p5, p5Value, pageid])
 				outputFemaleGood.flush()
 			elif defaultEthnicGroup[0] and hasWP:
 				if getReferences:
@@ -266,7 +268,7 @@ with open(inputFileName+'.csv','rU') as csvfile:
 					csvWriterOtherDeleted.writerow([language, titleOriginal, qid, p1, p1Value, p2, p2Value, firstSentence])
 					outputOtherDeleted.flush()
 			else:
-				csvWriterOther.writerow([language, titleOriginal, qid, p1, p1Value, p2, p2Value, firstSentence, wpCreator, p3, p3Value, p4, p4Value, p5, p5Value])
+				csvWriterOther.writerow([language, titleOriginal, qid, p1, p1Value, p2, p2Value, firstSentence, wpCreator, p3, p3Value, p4, p4Value, p5, p5Value, pageid])
 				outputOther.flush()
 		#here we are resetting the following values
 		keys = []

@@ -56,6 +56,19 @@ class parseWikipedia():
 		except:
 			logging.info("problem getting first sentence")
 	#
+
+	def getPageID(self):
+		try:
+			keys = self.json["query"]["pages"].keys()
+			# pageid = self.json["query"]["pages"][keys[0]]["pageid"]
+			# logging.info(pageid)
+			# self.pageid = pageid
+			# return pageid
+			print keys[0]
+			return keys[0]
+		except:
+			logging.info("problem getting pageid")
+	#
 	def getWikipediaCreator(self):
 		print(urllib.quote(self.titleWP))		
 
