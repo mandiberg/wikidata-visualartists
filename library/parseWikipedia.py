@@ -71,18 +71,25 @@ class parseWikipedia():
 	#
 	def getWikipediaCreator(self):
 		print((urllib.parse.quote(self.titleWP)))		
-
+		# print(self.language)
 		wpRequest = Request('https://'+self.language+'.wikipedia.org/w/api.php?format=json&action=query&prop=revisions&rvlimit=1&rvprop=timestamp%7Cuser%7Ccomment&rvdir=newer&titles='+urllib.parse.quote(self.titleWP))
+		# wpRequest = Request('https://en.wikipedia.org/w/api.php?format=json&action=query&prop=revisions&titles=Morris_Weinfeld&rvlimit=1&rvprop=timestamp%7Cuser%7Ccomment&rvdir=newer')
 		logging.info('https://'+self.language+'.wikipedia.org/w/api.php?format=json&action=query&prop=revisions&rvlimit=1&rvprop=timestamp%7Cuser%7Ccomment&rvdir=newer&titles='+urllib.parse.quote(self.titleWP))
 		#https://en.wikipedia.org/w/api.php?action=query&prop=revisions&titles=Animation&rvlimit=1&rvprop=timestamp%7Cuser%7Ccomment&rvdir=newer
 
 		try:
+			# print ('about to try to ask for it')
 			responsePW = urlopen(wpRequest, timeout=5)
+			# print ('asked for it')
 			wikiPedia = responsePW.read()
+			# print ('read it')
+			print (wikiPedia 	)
 			jsonDataPW = json.loads(wikiPedia)
 			self.json = jsonDataPW
+			print ('loaded it')
 			# print(json.dumps(self.json, indent=2))
 			keys = list(self.json["query"]["pages"].keys())
+			print (keys)
 			# print(self.json["query"]["pages"][keys[0]]["revisions"])
 			# keys2 = self.json["query"]["pages"][keys1[0]]["revisions"].keys()
 			# print(keys2)

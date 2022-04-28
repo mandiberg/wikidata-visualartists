@@ -10,7 +10,7 @@ myProperty = ['P106','occupation']
 
 #This is the name of the file that has your input list
 
-inputFileNameQuickSheets = 'artist_test.csv'
+inputFileNameQuickSheets = 'all_enwiki_bios_from_wikidata_HEAD.csv'
 
 
 #Gender

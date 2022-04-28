@@ -74,6 +74,7 @@ nonWikiRef = getReferences
 #don't edit below here
 rowRef = ['language','title','QID',pValues[0][0],pValues[0][1],pValues[1][0],pValues[1][1],'accept value','Reference Link', 'context']
 rowHuman = ['language','title','QID',pValues[0][0],pValues[0][1],pValues[1][0],pValues[1][1],'WP first sentence']
+rowCreator = ['QID','Creator','Creation Date','Page ID']
 rowQS = ['QID of person', pValues[1][0], 'QID of '+pValues[1][1], 'stated in', 'enwiki']
 rowEdit = ['language','title','QID',pValues[0][0],pValues[0][1],pValues[1][0],'popular','accept value',pValues[1][1],pValues[1][1]+' description','alt '+pValues[1][1],'WP first sentence']
 rowQSallWP = ['QID','property id','property QID','referenced in','wikipediaQID']
