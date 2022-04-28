@@ -1,6 +1,5 @@
-#This is the main script that manages all the classes and methods
-#The input file is parsed here and output file is written here as well
-from urllib2 import Request, urlopen, URLError
+from urllib.request import Request, urlopen
+from urllib.error import URLError
 import os, json, csv
 
 import re
@@ -14,7 +13,7 @@ from library.parseWikidata import parseWikidata
 from library.parseWikipedia import parseWikipedia
 from library.handleReferences import References
 
-print debug
+print(debug)
 if debug:
 	outlevel = logging.DEBUG
 else:
@@ -123,17 +122,19 @@ with open(inputFileName+'.csv','rU') as csvfile:
 					qid = WD.getQID()
 		hasWP = False
 		hasWP = WP.getWikipediaJSON() #get wikipedia json object
-		print "HAS WP ==================== "+str(hasWP)
+		print("HAS WP ==================== "+str(hasWP))
 
-		wpCreator = False
-		wpCreator = WP.getWikipediaCreator() #get wikipedia json object
-		print "The Creator is ==================== "+str(wpCreator)
+		wpCreatorPlus = False
+		wpCreatorPlus = WP.getWikipediaCreator() #get wikipedia json object
+		wpCreator = wpCreatorPlus[0].decode('UTF-8')
+		wpCreateDate = wpCreatorPlus[1].decode('UTF-8')
+		print("The Creator is ==================== "+ str(wpCreator) + str(wpCreateDate))
 
 
 		if useFirstSentence:
 			firstSentence = WP.getFirstSentence()
 		pageid = WP.getPageID()
-		print "ID ######## "+str(pageid)
+		print("ID ######## "+str(pageid))
 		WD.getPData(pValues[0][0])
 		WD.getPData(pValues[1][0])
 		WD.getPData("P31")  #added this
@@ -141,36 +142,38 @@ with open(inputFileName+'.csv','rU') as csvfile:
 		WD.getPData("P569")  #added this
 		logging.info(WD.pData)
 		# logging.info(pList21)
-		p1 = WD.pData[pValues[0][0]][0].decode().encode('utf-8')
-		p1Value = WD.pData[pValues[0][0]][1].decode().encode('utf-8')
-		p2 = WD.pData[pValues[1][0]][0].decode().encode('utf-8')
+		p1 = WD.pData[pValues[0][0]][0]
+		p1Value = WD.pData[pValues[0][0]][1]
+		p2 = WD.pData[pValues[1][0]][0]
 		try:
-			p2Value = WD.pData[pValues[1][0]][1].decode().encode('utf-8')
+			p2Value = WD.pData[pValues[1][0]][1]
 		except Exception as e:
 			p2Value = "NULL"
 
-		p3 = unicode(WD.pData["P31"][0].decode().encode('utf-8'),errors='ignore')
+		p3 = (WD.pData["P31"][0])
 		try:
-			p3Value = WD.pData["P31"][1].decode().encode(u'utf-8')
+			p3Value = WD.pData["P31"][1]
 		except Exception as e:
 			p3Value = "NULL"
 
 		#adding two subroutings for the additiona Pvalues
-		p4 = unicode(WD.pData["P27"][0].decode().encode('utf-8'),errors='ignore')
+		p4 = (WD.pData["P27"][0])
 		try:
-			p4Value = WD.pData["P27"][1].decode().encode(u'utf-8')
+			p4Value = WD.pData["P27"][1]
 		except Exception as e:
 			p4Value = "NULL"
 
 #P569 isn't coming through. I think it is because it is a date value, and so encoded differntly	
-		p5 = unicode(WD.pData["P569"][0].decode().encode('utf-8'),errors='ignore')
+		p5 = (WD.pData["P569"][0])
 		try:
-			p5Value = WD.pData["P569"][1].decode().encode(u'utf-8')
+			p5Value = WD.pData["P569"][1]
 		except Exception as e:
 			p5Value = "NULL"
 
-		printout = (qid+" --- "+unicode(titleOriginal,errors='ignore')+" --- "+p4+" --- "+p4Value+" --- "+p5+" --- "+p5Value).decode().encode('utf-8')
-		logging.critical(printout.decode('utf-8').encode('utf-8'))
+			# print(qid+" --- "+titleOriginal+" --- "+p4+" --- "+p4Value+" --- "+p5+" --- "+p5Value)
+
+			# printout = (qid+" --- "+str(titleOriginal,errors='ignore')+" --- "+p4+" --- "+p4Value+" --- "+p5+" --- "+p5Value)
+			# logging.critical(printout.decode('utf-8').encode('utf-8'))
 		if any(p1Value.lower() ==  s.lower() for s in genderSelect):
 			if p2Value:
 				#if the title is a specified gender and has the secondary P value write to the good.csv file
@@ -187,10 +190,10 @@ with open(inputFileName+'.csv','rU') as csvfile:
 						if link in allInfo:
 							for context in allInfo[link]:
 								logging.info(p2Value + " ------------ " + link + " -------- " + context)
-								csvWriterRef.writerow([language, titleOriginal, qid, p1, p1Value, p2, p2Value, wpCreator, p3, p3Value, p4, p4Value, p5, p5Value,'',link, context, pageid])
+								csvWriterRef.writerow([language, titleOriginal, qid, p1, p1Value, p2, p2Value, wpCreator, wpCreateDate, p3, p3Value, p4, p4Value, p5, p5Value,'',link, context, pageid])
 								outputRef.flush()
 
-				csvWriterFemaleGood.writerow([language, titleOriginal, qid, p1, p1Value, p2, p2Value, firstSentence, wpCreator, p3, p3Value, p4, p4Value, p5, p5Value, pageid])
+				csvWriterFemaleGood.writerow([language, titleOriginal, qid, p1, p1Value, p2, p2Value, firstSentence, wpCreator, wpCreateDate, p3, p3Value, p4, p4Value, p5, p5Value, pageid])
 				outputFemaleGood.flush()
 			elif defaultEthnicGroup[0] and hasWP:
 				if getReferences:
@@ -268,7 +271,7 @@ with open(inputFileName+'.csv','rU') as csvfile:
 					csvWriterOtherDeleted.writerow([language, titleOriginal, qid, p1, p1Value, p2, p2Value, firstSentence])
 					outputOtherDeleted.flush()
 			else:
-				csvWriterOther.writerow([language, titleOriginal, qid, p1, p1Value, p2, p2Value, firstSentence, wpCreator, p3, p3Value, p4, p4Value, p5, p5Value, pageid])
+				csvWriterOther.writerow([language, titleOriginal, qid, p1, p1Value, p2, p2Value, firstSentence, wpCreator, wpCreateDate, p3, p3Value, p4, p4Value, p5, p5Value, pageid])
 				outputOther.flush()
 		#here we are resetting the following values
 		keys = []

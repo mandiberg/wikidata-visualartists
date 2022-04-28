@@ -250,7 +250,7 @@ def main():
                 DeprecationWarning
             )
             baseurl = file_
-            j = urllib.urlopen(baseurl)
+            j = urllib.request.urlopen(baseurl)
             data = j.read()
             if encoding is None:
                 try:

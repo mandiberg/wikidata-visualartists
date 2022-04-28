@@ -1,12 +1,12 @@
 #references work with english wikipedia at the moment
-import urllib2
+import urllib.request, urllib.error, urllib.parse
 import csv
 import logging
-import html2text
+from . import html2text
 import unicodedata
-import cStringIO
+import io
 import re
-from masterSettings import *
+from .masterSettings import *
 
 #TODO ask about where References class should be used, because it will slow the code a lot.
 class References:
@@ -54,11 +54,11 @@ class References:
 			try:
 				cleanText = html2text.html2text(text)
 				cleanText = unicodedata.normalize('NFKD', cleanText).encode('ascii','ignore')
-				output = cStringIO.StringIO()
+				output = io.StringIO()
 				output.write(cleanText)
 				content = output.getvalue()
 				# prevLine = ''
-				textList = filter(None, content.splitlines())
+				textList = [_f for _f in content.splitlines() if _f]
 				# print len(textList)
 				# str_list = filter(None, str_list)
 				for i in range(0,len(textList)):
@@ -95,8 +95,8 @@ class References:
 			logging.info(link)
 			context = []
 			try:
-				response = urllib2.urlopen(link, timeout=5)
-				html = unicode(response.read(), errors = 'ignore')
+				response = urllib.request.urlopen(link, timeout=5)
+				html = str(response.read(), errors = 'ignore')
 				# logging.info(html)
 			except :
 				# logging.info(e)
@@ -142,11 +142,11 @@ class References:
 			wikipediaLink = "https://en.wikipedia.org/wiki/" + title
 			logging.info(wikipediaLink)
 		try:
-			response = urllib2.urlopen(wikipediaLink, timeout=5)
-			html = unicode(response.read(), errors = 'ignore')
+			response = urllib.request.urlopen(wikipediaLink, timeout=5)
+			html = str(response.read(), errors = 'ignore')
 			html = unicodedata.normalize('NFKD', html).encode('ascii','ignore')
 			return html
-		except urllib2.URLError, e:
+		except urllib.error.URLError as e:
 			logging.info(e)
 			logging.info("error reaching wikipedia page for references")
 

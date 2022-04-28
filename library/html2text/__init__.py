@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # coding: utf-8
 """html2text: Turn HTML into equivalent Markdown-structured text."""
-from __future__ import division
-from __future__ import unicode_literals
+
+
 import re
 import sys
 
@@ -11,10 +11,10 @@ try:
 except ImportError:  # pragma: no cover
     pass
 
-from compat import urlparse, HTMLParser
-import config
+from .compat import urlparse, HTMLParser
+from . import config
 
-from utils import (
+from .utils import (
     name2cp,
     unifiable_n,
     google_text_emphasis,
@@ -32,8 +32,8 @@ from utils import (
 )
 
 try:
-    chr = unichr
-    nochr = unicode('')
+    chr = chr
+    nochr = str('')
 except NameError:
     # python3 uses chr
     nochr = str('')
@@ -172,7 +172,7 @@ class HTML2Text(HTMLParser.HTMLParser):
         else:
             nbsp = chr(32)
         try:
-            outtext = outtext.replace(unicode('&nbsp_place_holder;'), nbsp)
+            outtext = outtext.replace(str('&nbsp_place_holder;'), nbsp)
         except NameError:
             outtext = outtext.replace('&nbsp_place_holder;', nbsp)
 
@@ -786,7 +786,7 @@ class HTML2Text(HTMLParser.HTMLParser):
                 self.a = newa
 
             if self.abbr_list and force == "end":
-                for abbr, definition in self.abbr_list.items():
+                for abbr, definition in list(self.abbr_list.items()):
                     self.out("  *[" + abbr + "]: " + definition + "\n")
 
             self.p_p = 0
@@ -836,7 +836,7 @@ class HTML2Text(HTMLParser.HTMLParser):
         else:
             c = int(name)
 
-        if not self.unicode_snob and c in unifiable_n.keys():
+        if not self.unicode_snob and c in list(unifiable_n.keys()):
             return unifiable_n[c]
         else:
             try:
@@ -845,7 +845,7 @@ class HTML2Text(HTMLParser.HTMLParser):
                 return ''
 
     def entityref(self, c):
-        if not self.unicode_snob and c in config.UNIFIABLE.keys():
+        if not self.unicode_snob and c in list(config.UNIFIABLE.keys()):
             return config.UNIFIABLE[c]
         else:
             try:

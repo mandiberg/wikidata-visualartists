@@ -1,5 +1,5 @@
-# This is the class that pulls and parses wikidata.
-from urllib2 import Request, urlopen, URLError
+from urllib.request import Request, urlopen
+from urllib.error import URLError
 import json
 import re
 import logging
@@ -36,7 +36,7 @@ class parseWikidata:
 
 	def getQID(self):
 		try:
-			keys = self.jsonData["entities"].keys()
+			keys = list(self.jsonData["entities"].keys())
 			entitiesFound = True
 			for key in keys:
 				qid = key
@@ -56,7 +56,7 @@ class parseWikidata:
 					pJsonData = json.loads(pData)
 					# logging.info(pJsonData)
 					# logging.info(pJsonData["entities"][x]["labels"]["en"]["value"])
-					if "en" in pJsonData["entities"][pQID]["labels"].keys():
+					if "en" in list(pJsonData["entities"][pQID]["labels"].keys()):
 		 				pValue= pJsonData["entities"][pQID]["labels"]["en"]["value"].encode("utf8")
 					else:
 						pValue = pJsonData["entities"][pQID]["descriptions"]["en"]["value"].encode("utf8")

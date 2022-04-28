@@ -1,9 +1,9 @@
-# This class handles all wikipedia data.
-from urllib2 import Request, urlopen, URLError
+from urllib.request import Request, urlopen
+from urllib.error import URLError
 import json
 import re
 import logging
-import urllib
+import urllib.request, urllib.parse, urllib.error
 class parseWikipedia():
 	def __init__(self,language, titleWP):
 		self.language = language
@@ -36,7 +36,7 @@ class parseWikipedia():
 			wikiPedia = responsePW.read()
 			jsonDataPW = json.loads(wikiPedia)
 			self.json = jsonDataPW
-			keys = self.json["query"]["pages"].keys()
+			keys = list(self.json["query"]["pages"].keys())
 			if keys[0] == "-1":
 				return False
 			else:
@@ -46,7 +46,7 @@ class parseWikipedia():
 			return False
 	def getFirstSentence(self):
 		try:
-			keys = self.json["query"]["pages"].keys()
+			keys = list(self.json["query"]["pages"].keys())
 			extract = self.json["query"]["pages"][keys[0]]["extract"]
 			logging.info(extract)
 			firstSentence = re.search(r'^.*?\w\w+\)?\.', extract).group(0).encode("utf8")
@@ -59,21 +59,21 @@ class parseWikipedia():
 
 	def getPageID(self):
 		try:
-			keys = self.json["query"]["pages"].keys()
+			keys = list(self.json["query"]["pages"].keys())
 			# pageid = self.json["query"]["pages"][keys[0]]["pageid"]
 			# logging.info(pageid)
 			# self.pageid = pageid
 			# return pageid
-			print keys[0]
+			print(keys[0])
 			return keys[0]
 		except:
 			logging.info("problem getting pageid")
 	#
 	def getWikipediaCreator(self):
-		print(urllib.quote(self.titleWP))		
+		print((urllib.parse.quote(self.titleWP)))		
 
-		wpRequest = Request('https://'+self.language+'.wikipedia.org/w/api.php?format=json&action=query&prop=revisions&rvlimit=1&rvprop=timestamp%7Cuser%7Ccomment&rvdir=newer&titles='+urllib.quote(self.titleWP))
-		logging.info('https://'+self.language+'.wikipedia.org/w/api.php?format=json&action=query&prop=revisions&rvlimit=1&rvprop=timestamp%7Cuser%7Ccomment&rvdir=newer&titles='+urllib.quote(self.titleWP))
+		wpRequest = Request('https://'+self.language+'.wikipedia.org/w/api.php?format=json&action=query&prop=revisions&rvlimit=1&rvprop=timestamp%7Cuser%7Ccomment&rvdir=newer&titles='+urllib.parse.quote(self.titleWP))
+		logging.info('https://'+self.language+'.wikipedia.org/w/api.php?format=json&action=query&prop=revisions&rvlimit=1&rvprop=timestamp%7Cuser%7Ccomment&rvdir=newer&titles='+urllib.parse.quote(self.titleWP))
 		#https://en.wikipedia.org/w/api.php?action=query&prop=revisions&titles=Animation&rvlimit=1&rvprop=timestamp%7Cuser%7Ccomment&rvdir=newer
 
 		try:
@@ -82,13 +82,14 @@ class parseWikipedia():
 			jsonDataPW = json.loads(wikiPedia)
 			self.json = jsonDataPW
 			# print(json.dumps(self.json, indent=2))
-			keys = self.json["query"]["pages"].keys()
+			keys = list(self.json["query"]["pages"].keys())
 			# print(self.json["query"]["pages"][keys[0]]["revisions"])
 			# keys2 = self.json["query"]["pages"][keys1[0]]["revisions"].keys()
 			# print(keys2)
 
 			creatorPlus = self.json["query"]["pages"][keys[0]]["revisions"][0]
 			creator =creatorPlus["user"].encode("utf8")
+			createDate =creatorPlus["timestamp"].encode("utf8")
 			# creator = json.loads(creatorPlus)
 			#creator = re.search(r'user.*', revisionObject).group(0).encode("utf8")
 			# u'user': u'
@@ -104,7 +105,8 @@ class parseWikipedia():
 
 			logging.info(creator)
 			self.creator = creator
-			return creator
+			self.createDate = createDate
+			return creator, createDate
 		except:
 			logging.info("cannot get wikipedia 'creator' json object")
 			print("uh oh, exceptions")

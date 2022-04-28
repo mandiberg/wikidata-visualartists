@@ -2,10 +2,10 @@ import sys
 
 
 if sys.version_info[0] == 2:
-    import htmlentitydefs
-    import urlparse
-    import HTMLParser
-    import urllib
+    import html.entities
+    import urllib.parse
+    import html.parser
+    import urllib.request, urllib.parse, urllib.error
     from cgi import escape as html_escape
 else:
     import urllib.parse as urlparse

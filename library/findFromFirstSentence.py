@@ -1,7 +1,7 @@
 import os, csv
 import logging, re
 # from fuzzywuzzy import fuzz
-from masterSettings import *
+from .masterSettings import *
 
 def findFromFirstSentence(inputFileName,language, qid, p1, p1Value, titleOriginal, firstSentence):
 	lines = []

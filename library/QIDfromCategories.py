@@ -1,4 +1,5 @@
-from urllib2 import Request, urlopen, URLError
+from urllib.request import Request, urlopen
+from urllib.error import URLError
 import os, json, csv
 import logging
 #output from categories:
@@ -84,7 +85,7 @@ def getQidFromCategories(inputFileName, matrixName, isItGrep, title, qid,languag
 	except:
 		logging.info('General error while loading api request')
 	try:
-		keys = jsonData['query']['pages'].keys()
+		keys = list(jsonData['query']['pages'].keys())
 	except:
 		logging.info("cannot find page keys")
 	try:
